@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>3id milad sa3id</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap');
@@ -24,8 +24,9 @@
         .container {
             position: relative;
             z-index: 10;
-            width: 90%;
+            width: 95%; /* Use more width on mobile */
             max-width: 800px;
+            padding: 0 10px;
         }
 
         h1 {
@@ -47,9 +48,9 @@
             animation-delay: 0.2s;
             position: relative; 
             transition: all 0.3s ease;
+            line-height: 1.1; /* Tighter lines */
         }
 
-        /* Call Action Buttons */
         .btn-container {
             display: flex; 
             justify-content: center;
@@ -76,25 +77,21 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             transition: transform 0.2s;
             outline: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .btn:active {
-            transform: scale(0.95);
-        }
-
+        .btn:active { transform: scale(0.95); }
         .btn-accept { background-color: #2ecc71; }
         .btn-decline { background-color: #e74c3c; }
 
-        /* The Return Button */
         #retryBtn {
-            display: none; /* Hidden by default */
+            display: none;
             margin: 30px auto 0 auto;
             background-color: #34495e;
             padding: 10px 25px;
             font-size: 1.2rem;
         }
 
-        /* Subtle Background Animation Elements */
         .floater {
             position: absolute;
             bottom: -100px;
@@ -105,11 +102,17 @@
             user-select: none;
         }
 
-        /* Animations */
         @keyframes pulseText {
             0% { transform: scale(1) translateY(0); }
             50% { transform: scale(1.05) translateY(-15px); }
             100% { transform: scale(1) translateY(0); }
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            20% { opacity: 0.3; }
+            80% { opacity: 0.3; }
+            100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
         }
 
         @keyframes panicMode {
@@ -126,18 +129,32 @@
             100% { transform: translate(0, 0) rotate(0deg); }
         }
 
-        @keyframes floatUp {
-            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
-            20% { opacity: 0.3; }
-            80% { opacity: 0.3; }
-            100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
-        }
-
         @media (max-width: 600px) {
-            h1 { font-size: 2rem; }
-            .name { font-size: 2.5rem; word-break: break-word;}
-            .btn { padding: 10px 30px; font-size: 1.2rem; }
-            .btn-container { gap: 20px; }
+            h1 { 
+                font-size: 1.8rem; /* Much smaller to fit */
+                letter-spacing: 1px;
+            }
+            .name { 
+                font-size: 2.2rem; /* Sized to fit "18 3AM YATASIL BIK" */
+                margin-top: 15px;
+            }
+            
+            .btn-container { 
+                gap: 15px; 
+                margin-top: 20px;
+            }
+            .btn { 
+                padding: 12px 30px; 
+                font-size: 1.1rem; 
+            }
+
+            @keyframes panicMode {
+                0%   { transform: translate(0, 0) rotate(0deg); }
+                25%  { transform: translate(-10px, -10px) rotate(-5deg); }
+                50%  { transform: translate(10px, 10px) rotate(5deg); }
+                75%  { transform: translate(-10px, 10px) rotate(-5deg); }
+                100% { transform: translate(0, 0) rotate(0deg); }
+            }
         }
     </style>
 </head>
@@ -152,11 +169,10 @@
             <button class="btn btn-accept" onclick="handleAccept()">قبول</button>
         </div>
 
-        <button id="retryBtn" class="btn" onclick="resetPrank()">3rftk drti rafd, jrbi tani</button>
+        <button id="retryBtn" class="btn" onclick="resetPrank()">3arfk drti rafd, 3awdi</button>
     </div>
 
     <script>
-        // Floating Background Logic
         function createFloater() {
             const symbols = ['🦷', '✨', '🥳']; 
             const el = document.createElement('div');
@@ -172,70 +188,65 @@
         }
         setInterval(createFloater, 800);
 
-        // --- THE LOGIC ---
         const nameEl = document.getElementById('nameText');
         const btnContainer = document.getElementById('buttons');
         const retryBtn = document.getElementById('retryBtn');
 
-        // Step 1: Start Chaos after 2 seconds
         setTimeout(() => {
             nameEl.style.animation = "panicMode 0.15s infinite linear";
             nameEl.style.color = "#ff2a6d"; 
 
-            // Step 2: Stop chaos & Show "Call" after 3 more seconds
             setTimeout(() => {
                 showCallScreen();
             }, 3000);
 
-        }, 4000);
+        }, 2000);
 
         function showCallScreen() {
             nameEl.style.animation = "pulseText 2s infinite"; 
             nameEl.innerText = "18 3AM TATASIL BIK..."; 
             nameEl.style.color = "#2c3e50"; 
-            nameEl.style.fontSize = "3rem"; 
+            
+            if(window.innerWidth < 600) {
+                nameEl.style.fontSize = "2.2rem"; // Mobile size
+            } else {
+                nameEl.style.fontSize = "3rem"; // Desktop size
+            }
+            
             nameEl.style.transform = "translate(0,0)";
-            
-            // Show Buttons
             btnContainer.style.display = "flex";
-            // Small delay to allow fade in
             setTimeout(() => { btnContainer.classList.add('visible'); }, 50);
-            
-            // Ensure retry is hidden
             retryBtn.style.display = "none";
         }
 
-        // Button Functions
         function handleAccept() {
-            btnContainer.style.display = 'none'; // Hide buttons
+            btnContainer.style.display = 'none'; 
             finalState();
         }
 
         function handleRefuse() {
-            btnContainer.style.display = 'none'; // Hide buttons
-            nameEl.innerText = "NN MAYMKNCH"; // Trolling text
+            btnContainer.style.display = 'none'; 
+            nameEl.innerText = "NN MAYMKNCH"; 
             nameEl.style.color = "#e74c3c";
-            
-            setTimeout(() => {
-                finalState();
-            }, 2000);
+            setTimeout(() => { finalState(); }, 2000);
         }
 
         function finalState() {
             nameEl.innerText = "W333333 WLITI 18";
             nameEl.style.color = "#ee0f91"; 
-            nameEl.style.fontSize = "4rem";
             
-            // Show the Retry Button
+            if(window.innerWidth < 600) {
+                nameEl.style.fontSize = "2.5rem"; // Mobile size
+            } else {
+                nameEl.style.fontSize = "4rem"; // Desktop size
+            }
+
             retryBtn.style.display = "block";
         }
 
         function resetPrank() {
-            // Reset to the Call Screen
             showCallScreen();
         }
-
     </script>
-
 </body>
 </html>
